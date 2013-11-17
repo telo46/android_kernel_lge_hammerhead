@@ -1034,5 +1034,14 @@ config TOUCHSCREEN_CHARGER_NOTIFY
 
 config TOUCHSCREEN_SWEEP2WAKE
         tristate "Sweep2Wake for touchscreens"
+        select TOUCHSCREEN_SWEEP2WAKE_PREVENT_SLEEP
         default n
+
+config TOUCHSCREEN_SWEEP2WAKE_PREVENT_SLEEP
+        bool "Inihibit sleep on modified touchscreen drivers"
+        default n
+        help
+          This allows sweep2wake to disable the sleep function of modified
+          touchscreen drivers.
+
 endif
