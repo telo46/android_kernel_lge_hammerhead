@@ -1685,46 +1685,43 @@ static int synaptics_ts_stop(struct synaptics_ts_data *ts)
 {
 #ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
 #if defined(CONFIG_TOUCHSCREEN_SWEEP2WAKE) || defined(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE)
-	bool prevent_sleep = false;
+        bool prevent_sleep = false;
 #endif
 #if defined(CONFIG_TOUCHSCREEN_SWEEP2WAKE)
-	prevent_sleep = (s2w_switch > 0) && (s2w_s2sonly == 0);
+        prevent_sleep = (s2w_switch > 0) && (s2w_s2sonly == 0);
 #endif
 #if defined(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE)
-	prevent_sleep = prevent_sleep || (dt2w_switch > 0);
+        prevent_sleep = prevent_sleep || (dt2w_switch > 0);
 #endif
 #endif
-	TOUCH_DEBUG_TRACE("%s\n", __func__);
+        TOUCH_DEBUG_TRACE("%s\n", __func__);
 
-	if (!ts->curr_resume_state) {
-		return 0;
-	}
-#ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE_PREVENT_SLEEP
-	if (s2w_switch == 0)
-#endif
-	{
-	ts->curr_resume_state = 0;
+        if (!ts->curr_resume_state) {
+                return 0;
+        }
 
-	if (ts->fw_info.fw_upgrade.is_downloading == UNDER_DOWNLOADING) {
-		TOUCH_INFO_MSG("stop is not executed\n");
-		return 0;
-	}
+        ts->curr_resume_state = 0;
+
+        if (ts->fw_info.fw_upgrade.is_downloading == UNDER_DOWNLOADING) {
+                TOUCH_INFO_MSG("stop is not executed\n");
+                return 0;
+        }
 
 #ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
-	if (!prevent_sleep)
+        if (!prevent_sleep)
 #endif
-	{
-		disable_irq_nosync(ts->client->irq);
+        {
+                disable_irq_nosync(ts->client->irq);
 
-		cancel_delayed_work_sync(&ts->work_init);
-		release_all_ts_event(ts);
-		touch_power_cntl(ts, POWER_OFF);
-	}
+                cancel_delayed_work_sync(&ts->work_init);
+                release_all_ts_event(ts);
+                touch_power_cntl(ts, POWER_OFF);
+        }
 #ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
-	if (prevent_sleep)
-		enable_irq_wake(ts->client->irq);
+        if (prevent_sleep)
+                enable_irq_wake(ts->client->irq);
 #endif
-	return 0;
+        return 0;
 }
 
 static int lcd_notifier_callback(struct notifier_block *this,
